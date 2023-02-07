@@ -213,6 +213,10 @@ CO3867_standard_dev_all %>%
   kable(.,'html') %>%
   kable_styling() %>%
   scroll_box(width='250px',height='500px')
+```
+
+
+```{r 444 CO3867 std dev update}
 #CALLING THIS something different
 CO3867_all_V2 <- ggplot(CO3867_standard_dev_all, aes(x = waterYear, y = sd_2))+
   geom_line(size= 0.7) +
@@ -222,8 +226,11 @@ CO3867_all_V2 <- ggplot(CO3867_standard_dev_all, aes(x = waterYear, y = sd_2))+
   xlab('Water year')
 
 
-CO3867_all_V2
+print(CO3867_all_V2)
+```
 
+
+```{r  CO3867 sd }
 CO3867_sd_mk <- mk.test(CO3867_standard_dev_all$sd_2)
 print(CO3867_sd_mk)
 
