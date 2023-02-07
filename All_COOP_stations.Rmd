@@ -1,5 +1,5 @@
 ---
-title: "all_COOP"
+title: "Neighboring COOP stations in the Yampa and Rio Grande areas"
 author: "Brian"
 date: "2/7/2023"
 output:
@@ -214,13 +214,15 @@ CO3867_standard_dev_all %>%
   kable_styling() %>%
   scroll_box(width='250px',height='500px')
 
-ggplot(CO3867_standard_dev_all, aes(x = waterYear, y = sd_2))+
+CO3867_all <- ggplot(CO3867_standard_dev_all, aes(x = waterYear, y = sd_2))+
   geom_line(size= 0.7) +
   theme_few() +
   geom_smooth(method = "lm", se=FALSE) +
   ylab('SD') + 
   xlab('Water year')
 
+
+CO3867_all
 
 CO3867_sd_mk <- mk.test(CO3867_standard_dev_all$sd_2)
 print(CO3867_sd_mk)
@@ -413,13 +415,14 @@ CO8756_standard_dev_all %>%
   kable_styling() %>%
   scroll_box(width='250px',height='500px')
 
-ggplot(CO8756_standard_dev_all, aes(x = waterYear, y = sd_2))+
+CO8756_all <- ggplot(CO8756_standard_dev_all, aes(x = waterYear, y = sd_2))+
   geom_line(size= 0.7) +
   theme_few() +
   geom_smooth(method = "lm", se=FALSE) +
   ylab('SD') + 
   xlab('Water year')
 
+CO8756_all
 
 CO8756_sd_mk <- mk.test(CO8756_standard_dev_all$sd_2)
 print(CO8756_sd_mk)
