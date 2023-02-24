@@ -943,7 +943,7 @@ print(CO1932_sd_sens_winter)
 
 
 
-STEAMBOAT SPRINGS *CO7936*
+## STEAMBOAT SPRINGS *CO7936*
 
  Detrending Data 
 
