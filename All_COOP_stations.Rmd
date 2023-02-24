@@ -942,6 +942,215 @@ print(CO1932_sd_sens_winter)
 
 
 
+
+STEAMBOAT SPRINGS *CO7936*
+
+ Detrending Data 
+
+```{r CO7936 detrending data}
+
+#average water year temperature
+
+CO7936_yearly_wy_aver <- COOP_stations_clean %>%
+  filter(station == "CO7936") %>% 
+  group_by(waterYear) %>%
+  filter(waterYear >= 1984) %>% 
+  mutate(aver_ann_temp = mean(avg_T_c))
+
+```
+
+```{r CO7936 detrending data2}
+#Average temperature by day for all water years:
+
+CO7936_daily_wy_aver <- CO7936_yearly_wy_aver %>% 
+  group_by(daymonth) %>% 
+  mutate(aver_day_temp = mean(aver_ann_temp))
+
+#average mean temperature by day for the period of record:
+
+CO7936_daily_wy_aver <- CO7936_daily_wy_aver %>% 
+  group_by(daymonth) %>% 
+  mutate(all_ave_temp = mean(CO7936_daily_wy_aver$aver_day_temp))
+
+#str(CO7936_daily_wy_aver)
+
+```
+
+```{r CO7936 Figure all year average temp}
+# try to show all years as means. 
+CO7936_daily_wy_aver2 <- CO7936_daily_wy_aver %>% 
+  #filter(waterYear == "1987" | waterYear == "2021") %>%
+  group_by(waterDay) %>%
+  mutate(date_temp = mean(avg_T_c))
+  
+CO7936_daily_wy_aver2$date_temp <- signif(CO7936_daily_wy_aver2$date_temp,3) #reduce the sig figs
+
+ggplot(CO7936_daily_wy_aver2, aes(x = waterDay, y = date_temp))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  #geom_smooth(method = "lm", se=FALSE) +
+  ylab('Average Daily temperature (°C)') + 
+  xlab('Day of water year')
+```
+
+Standard deviation- Determining residuals
+
+```{r CO7936 residuals}
+CO7936_standard_dev <- CO7936_daily_wy_aver %>% 
+  group_by(waterYear) %>% 
+  mutate(residual = (all_ave_temp-aver_ann_temp)+avg_T_c-aver_day_temp) %>% 
+  mutate(deviation = abs(residual-lag(residual)))
+
+mean(CO7936_standard_dev$residual)
+```
+*The mean of the residuals is close enough to zero*
+
+Calculating standard deviation for the timeseries
+```{r 444 CO7936 sd update}
+CO7936_standard_dev_all <- CO7936_standard_dev %>% 
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO7936_standard_dev_all <- CO7936_standard_dev_all %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO7936_standard_dev_all %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+```
+
+
+```{r 444 CO7936 std dev update}
+#CALLING THIS something different
+CO7936_all_V2 <- ggplot(CO7936_standard_dev_all, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+
+print(CO7936_all_V2)
+```
+
+
+```{r  CO7936 sd }
+CO7936_sd_mk <- mk.test(CO7936_standard_dev_all$sd_2)
+print(CO7936_sd_mk)
+
+CO7936_sd_sens <- sens.slope(CO7936_standard_dev_all$sd_2)
+print(CO7936_sd_sens)
+
+```
+
+Summer temperature standard deviation
+
+```{r CO7936 summer}
+
+CO7936_standard_dev_all_summer <- CO7936_standard_dev %>%
+  filter(waterDay >= 244 & waterDay <= 335) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO7936_standard_dev_all_summer <- CO7936_standard_dev_all_summer %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO7936_standard_dev_all_summer %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO7936_standard_dev_all_summer, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO7936 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Summer standard deviations.
+```{r CO7936 sd mk & ss summer}
+
+CO7936_sd_mk_summer <- mk.test(CO7936_standard_dev_all_summer$sd_2)
+print(CO7936_sd_mk_summer)
+
+CO7936_sd_sens_summer <- sens.slope(CO7936_standard_dev_all_summer$sd_2)
+print(CO7936_sd_sens_summer)
+
+```
+
+Winter temperature standard deviation
+
+```{r CO7936 winter}
+
+CO7936_standard_dev_all_winter <- CO7936_standard_dev %>%
+  filter(waterDay >= 32 & waterDay <= 182) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO7936_standard_dev_all_winter <- CO7936_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO7936_standard_dev_all_winter <- CO7936_standard_dev_all_winter %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO7936_standard_dev_all_winter %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO7936_standard_dev_all_winter, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO7936 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Winter standard deviations.
+```{r CO7936 sd mk & ss winter}
+
+CO7936_sd_mk_winter <- mk.test(CO7936_standard_dev_all_winter$sd_2)
+print(CO7936_sd_mk_winter)
+
+CO7936_sd_sens_winter <- sens.slope(CO7936_standard_dev_all_winter$sd_2)
+print(CO7936_sd_sens_winter)
+
+```
+
+
 # Southern Stations
 
 ## HERMIT 7 ESE *CO3951*
@@ -1754,3 +1963,211 @@ print(CO8582_sd_sens_winter)
 
 ```
 
+
+
+## DEL NORTE 2E *CO2184*
+
+ Detrending Data 
+
+```{r CO2184 detrending data}
+
+#average water year temperature
+
+CO2184_yearly_wy_aver <- COOP_stations_clean %>%
+  filter(station == "CO2184") %>% 
+  group_by(waterYear) %>%
+  filter(waterYear >= 1984) %>% 
+  mutate(aver_ann_temp = mean(avg_T_c))
+
+```
+
+```{r CO2184 detrending data2}
+#Average temperature by day for all water years:
+
+CO2184_daily_wy_aver <- CO2184_yearly_wy_aver %>% 
+  group_by(daymonth) %>% 
+  mutate(aver_day_temp = mean(aver_ann_temp))
+
+#average mean temperature by day for the period of record:
+
+CO2184_daily_wy_aver <- CO2184_daily_wy_aver %>% 
+  group_by(daymonth) %>% 
+  mutate(all_ave_temp = mean(CO2184_daily_wy_aver$aver_day_temp))
+
+#str(CO2184_daily_wy_aver)
+
+```
+
+```{r CO2184 Figure all year average temp}
+# try to show all years as means. 
+CO2184_daily_wy_aver2 <- CO2184_daily_wy_aver %>% 
+  #filter(waterYear == "1987" | waterYear == "2021") %>%
+  group_by(waterDay) %>%
+  mutate(date_temp = mean(avg_T_c))
+  
+CO2184_daily_wy_aver2$date_temp <- signif(CO2184_daily_wy_aver2$date_temp,3) #reduce the sig figs
+
+ggplot(CO2184_daily_wy_aver2, aes(x = waterDay, y = date_temp))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  #geom_smooth(method = "lm", se=FALSE) +
+  ylab('Average Daily temperature (°C)') + 
+  xlab('Day of water year')
+```
+
+Standard deviation- Determining residuals
+
+```{r CO2184 residuals}
+CO2184_standard_dev <- CO2184_daily_wy_aver %>% 
+  group_by(waterYear) %>% 
+  mutate(residual = (all_ave_temp-aver_ann_temp)+avg_T_c-aver_day_temp) %>% 
+  mutate(deviation = abs(residual-lag(residual)))
+
+mean(CO2184_standard_dev$residual)
+```
+*The mean of the residuals is close enough to zero*
+
+Calculating standard deviation for the timeseries
+```{r 444 CO2184 sd update}
+CO2184_standard_dev_all <- CO2184_standard_dev %>% 
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO2184_standard_dev_all <- CO2184_standard_dev_all %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO2184_standard_dev_all %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+```
+
+
+```{r 444 CO2184 std dev update}
+#CALLING THIS something different
+CO2184_all_V2 <- ggplot(CO2184_standard_dev_all, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+
+print(CO2184_all_V2)
+```
+
+
+```{r  CO2184 sd }
+CO2184_sd_mk <- mk.test(CO2184_standard_dev_all$sd_2)
+print(CO2184_sd_mk)
+
+CO2184_sd_sens <- sens.slope(CO2184_standard_dev_all$sd_2)
+print(CO2184_sd_sens)
+
+```
+
+Summer temperature standard deviation
+
+```{r CO2184 summer}
+
+CO2184_standard_dev_all_summer <- CO2184_standard_dev %>%
+  filter(waterDay >= 244 & waterDay <= 335) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO2184_standard_dev_all_summer <- CO2184_standard_dev_all_summer %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO2184_standard_dev_all_summer %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO2184_standard_dev_all_summer, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO2184 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Summer standard deviations.
+```{r CO2184 sd mk & ss summer}
+
+CO2184_sd_mk_summer <- mk.test(CO2184_standard_dev_all_summer$sd_2)
+print(CO2184_sd_mk_summer)
+
+CO2184_sd_sens_summer <- sens.slope(CO2184_standard_dev_all_summer$sd_2)
+print(CO2184_sd_sens_summer)
+
+```
+
+Winter temperature standard deviation
+
+```{r CO2184 winter}
+
+CO2184_standard_dev_all_winter <- CO2184_standard_dev %>%
+  filter(waterDay >= 32 & waterDay <= 182) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO2184_standard_dev_all_winter <- CO2184_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO2184_standard_dev_all_winter <- CO2184_standard_dev_all_winter %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO2184_standard_dev_all_winter %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO2184_standard_dev_all_winter, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO2184 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Winter standard deviations.
+```{r CO2184 sd mk & ss winter}
+
+CO2184_sd_mk_winter <- mk.test(CO2184_standard_dev_all_winter$sd_2)
+print(CO2184_sd_mk_winter)
+
+CO2184_sd_sens_winter <- sens.slope(CO2184_standard_dev_all_winter$sd_2)
+print(CO2184_sd_sens_winter)
+
+```
