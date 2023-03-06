@@ -340,6 +340,108 @@ print(CO3867_sd_sens_winter)
 ```
 
 
+### Spring and Fall temperature standard deviation
+
+
+```{r CO3867 spring}
+
+CO3867_standard_dev_all_spring <- CO3867_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO3867_standard_dev_all_spring <- CO3867_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO3867_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO3867_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO3867 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO3867 sd mk & ss spring}
+
+CO3867_sd_mk_spring <- mk.test(CO3867_standard_dev_all_spring$sd_2)
+print(CO3867_sd_mk_spring)
+
+CO3867_sd_sens_spring <- sens.slope(CO3867_standard_dev_all_spring$sd_2)
+print(CO3867_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO3867 fall}
+
+CO3867_standard_dev_all_fall <- CO3867_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO3867_standard_dev_all_fall <- CO3867_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO3867_standard_dev_all_fall <- CO3867_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO3867_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO3867_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO3867 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO3867 sd mk & ss fall}
+
+CO3867_sd_mk_fall <- mk.test(CO3867_standard_dev_all_fall$sd_2)
+print(CO3867_sd_mk_fall)
+
+CO3867_sd_sens_fall <- sens.slope(CO3867_standard_dev_all_fall$sd_2)
+print(CO3867_sd_sens_fall)
+
+```
+
+
 ## WALDEN *CO8756*
 
 Detrending Data 
@@ -540,6 +642,109 @@ print(CO8756_sd_sens_winter)
 ```
 
 
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO8756 spring}
+
+CO8756_standard_dev_all_spring <- CO8756_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO8756_standard_dev_all_spring <- CO8756_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO8756_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO8756_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO8756 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO8756 sd mk & ss spring}
+
+CO8756_sd_mk_spring <- mk.test(CO8756_standard_dev_all_spring$sd_2)
+print(CO8756_sd_mk_spring)
+
+CO8756_sd_sens_spring <- sens.slope(CO8756_standard_dev_all_spring$sd_2)
+print(CO8756_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO8756 fall}
+
+CO8756_standard_dev_all_fall <- CO8756_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO8756_standard_dev_all_fall <- CO8756_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO8756_standard_dev_all_fall <- CO8756_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO8756_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO8756_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO8756 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO8756 sd mk & ss fall}
+
+CO8756_sd_mk_fall <- mk.test(CO8756_standard_dev_all_fall$sd_2)
+print(CO8756_sd_mk_fall)
+
+CO8756_sd_sens_fall <- sens.slope(CO8756_standard_dev_all_fall$sd_2)
+print(CO8756_sd_sens_fall)
+
+```
+
+
 ## KREMMLING *CO4664*
 
 
@@ -736,6 +941,109 @@ print(CO4664_sd_mk_winter)
 
 CO4664_sd_sens_winter <- sens.slope(CO4664_standard_dev_all_winter$sd_2)
 print(CO4664_sd_sens_winter)
+
+```
+
+
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO4664 spring}
+
+CO4664_standard_dev_all_spring <- CO4664_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO4664_standard_dev_all_spring <- CO4664_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO4664_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO4664_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO4664 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO4664 sd mk & ss spring}
+
+CO4664_sd_mk_spring <- mk.test(CO4664_standard_dev_all_spring$sd_2)
+print(CO4664_sd_mk_spring)
+
+CO4664_sd_sens_spring <- sens.slope(CO4664_standard_dev_all_spring$sd_2)
+print(CO4664_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO4664 fall}
+
+CO4664_standard_dev_all_fall <- CO4664_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO4664_standard_dev_all_fall <- CO4664_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO4664_standard_dev_all_fall <- CO4664_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO4664_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO4664_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO4664 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO4664 sd mk & ss fall}
+
+CO4664_sd_mk_fall <- mk.test(CO4664_standard_dev_all_fall$sd_2)
+print(CO4664_sd_mk_fall)
+
+CO4664_sd_sens_fall <- sens.slope(CO4664_standard_dev_all_fall$sd_2)
+print(CO4664_sd_sens_fall)
 
 ```
 
@@ -941,6 +1249,108 @@ print(CO1932_sd_sens_winter)
 
 
 
+
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO1932 spring}
+
+CO1932_standard_dev_all_spring <- CO1932_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO1932_standard_dev_all_spring <- CO1932_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO1932_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO1932_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO1932 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO1932 sd mk & ss spring}
+
+CO1932_sd_mk_spring <- mk.test(CO1932_standard_dev_all_spring$sd_2)
+print(CO1932_sd_mk_spring)
+
+CO1932_sd_sens_spring <- sens.slope(CO1932_standard_dev_all_spring$sd_2)
+print(CO1932_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO1932 fall}
+
+CO1932_standard_dev_all_fall <- CO1932_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO1932_standard_dev_all_fall <- CO1932_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO1932_standard_dev_all_fall <- CO1932_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO1932_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO1932_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO1932 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO1932 sd mk & ss fall}
+
+CO1932_sd_mk_fall <- mk.test(CO1932_standard_dev_all_fall$sd_2)
+print(CO1932_sd_mk_fall)
+
+CO1932_sd_sens_fall <- sens.slope(CO1932_standard_dev_all_fall$sd_2)
+print(CO1932_sd_sens_fall)
+
+```
 
 
 ## STEAMBOAT SPRINGS *CO7936*
@@ -1151,6 +1561,109 @@ print(CO7936_sd_sens_winter)
 ```
 
 
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO7936 spring}
+
+CO7936_standard_dev_all_spring <- CO7936_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO7936_standard_dev_all_spring <- CO7936_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO7936_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO7936_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO7936 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO7936 sd mk & ss spring}
+
+CO7936_sd_mk_spring <- mk.test(CO7936_standard_dev_all_spring$sd_2)
+print(CO7936_sd_mk_spring)
+
+CO7936_sd_sens_spring <- sens.slope(CO7936_standard_dev_all_spring$sd_2)
+print(CO7936_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO7936 fall}
+
+CO7936_standard_dev_all_fall <- CO7936_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO7936_standard_dev_all_fall <- CO7936_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO7936_standard_dev_all_fall <- CO7936_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO7936_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO7936_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO7936 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO7936 sd mk & ss fall}
+
+CO7936_sd_mk_fall <- mk.test(CO7936_standard_dev_all_fall$sd_2)
+print(CO7936_sd_mk_fall)
+
+CO7936_sd_sens_fall <- sens.slope(CO7936_standard_dev_all_fall$sd_2)
+print(CO7936_sd_sens_fall)
+
+```
+
+
 # Southern Stations
 
 ## HERMIT 7 ESE *CO3951*
@@ -1351,6 +1864,109 @@ print(CO3951_sd_sens_winter)
 
 ```
 
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO3951 spring}
+
+CO3951_standard_dev_all_spring <- CO3951_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO3951_standard_dev_all_spring <- CO3951_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO3951_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO3951_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO3951 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO3951 sd mk & ss spring}
+
+CO3951_sd_mk_spring <- mk.test(CO3951_standard_dev_all_spring$sd_2)
+print(CO3951_sd_mk_spring)
+
+CO3951_sd_sens_spring <- sens.slope(CO3951_standard_dev_all_spring$sd_2)
+print(CO3951_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO3951 fall}
+
+CO3951_standard_dev_all_fall <- CO3951_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO3951_standard_dev_all_fall <- CO3951_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO3951_standard_dev_all_fall <- CO3951_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO3951_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO3951_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO3951 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO3951 sd mk & ss fall}
+
+CO3951_sd_mk_fall <- mk.test(CO3951_standard_dev_all_fall$sd_2)
+print(CO3951_sd_mk_fall)
+
+CO3951_sd_sens_fall <- sens.slope(CO3951_standard_dev_all_fall$sd_2)
+print(CO3951_sd_sens_fall)
+
+```
+
+
 ## PAGOSA SPRINGS *CO6258*
 
 Detrending Data 
@@ -1550,6 +2166,109 @@ print(CO6258_sd_sens_winter)
 ```
 
 
+
+
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO6258 spring}
+
+CO6258_standard_dev_all_spring <- CO6258_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO6258_standard_dev_all_spring <- CO6258_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO6258_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO6258_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO6258 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO6258 sd mk & ss spring}
+
+CO6258_sd_mk_spring <- mk.test(CO6258_standard_dev_all_spring$sd_2)
+print(CO6258_sd_mk_spring)
+
+CO6258_sd_sens_spring <- sens.slope(CO6258_standard_dev_all_spring$sd_2)
+print(CO6258_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO6258 fall}
+
+CO6258_standard_dev_all_fall <- CO6258_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO6258_standard_dev_all_fall <- CO6258_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO6258_standard_dev_all_fall <- CO6258_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO6258_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO6258_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO6258 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO6258 sd mk & ss fall}
+
+CO6258_sd_mk_fall <- mk.test(CO6258_standard_dev_all_fall$sd_2)
+print(CO6258_sd_mk_fall)
+
+CO6258_sd_sens_fall <- sens.slope(CO6258_standard_dev_all_fall$sd_2)
+print(CO6258_sd_sens_fall)
+
+```
 
 
 ## SILVERTON *CO7656*
@@ -1759,6 +2478,109 @@ print(CO7656_sd_sens_winter)
 
 
 
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO7656 spring}
+
+CO7656_standard_dev_all_spring <- CO7656_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO7656_standard_dev_all_spring <- CO7656_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO7656_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO7656_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO7656 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO7656 sd mk & ss spring}
+
+CO7656_sd_mk_spring <- mk.test(CO7656_standard_dev_all_spring$sd_2)
+print(CO7656_sd_mk_spring)
+
+CO7656_sd_sens_spring <- sens.slope(CO7656_standard_dev_all_spring$sd_2)
+print(CO7656_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO7656 fall}
+
+CO7656_standard_dev_all_fall <- CO7656_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO7656_standard_dev_all_fall <- CO7656_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO7656_standard_dev_all_fall <- CO7656_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO7656_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO7656_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO7656 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO7656 sd mk & ss fall}
+
+CO7656_sd_mk_fall <- mk.test(CO7656_standard_dev_all_fall$sd_2)
+print(CO7656_sd_mk_fall)
+
+CO7656_sd_sens_fall <- sens.slope(CO7656_standard_dev_all_fall$sd_2)
+print(CO7656_sd_sens_fall)
+
+```
+
+
 ## VALLECITO DAM *CO8582* 
 
 Detrending Data 
@@ -1963,6 +2785,107 @@ print(CO8582_sd_sens_winter)
 
 ```
 
+
+
+### Spring and Fall temperature standard deviation
+
+```{r CO8582 spring}
+
+CO8582_standard_dev_all_spring <- CO8582_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO8582_standard_dev_all_spring <- CO8582_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO8582_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO8582_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO8582 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO8582 sd mk & ss spring}
+
+CO8582_sd_mk_spring <- mk.test(CO8582_standard_dev_all_spring$sd_2)
+print(CO8582_sd_mk_spring)
+
+CO8582_sd_sens_spring <- sens.slope(CO8582_standard_dev_all_spring$sd_2)
+print(CO8582_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO8582 fall}
+
+CO8582_standard_dev_all_fall <- CO8582_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO8582_standard_dev_all_fall <- CO8582_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO8582_standard_dev_all_fall <- CO8582_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO8582_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO8582_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO8582 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO8582 sd mk & ss fall}
+
+CO8582_sd_mk_fall <- mk.test(CO8582_standard_dev_all_fall$sd_2)
+print(CO8582_sd_mk_fall)
+
+CO8582_sd_sens_fall <- sens.slope(CO8582_standard_dev_all_fall$sd_2)
+print(CO8582_sd_sens_fall)
+
+```
 
 
 ## DEL NORTE 2E *CO2184*
@@ -2171,3 +3094,106 @@ CO2184_sd_sens_winter <- sens.slope(CO2184_standard_dev_all_winter$sd_2)
 print(CO2184_sd_sens_winter)
 
 ```
+
+
+### Spring and Fall temperature standard deviation
+
+
+```{r CO2184 spring}
+
+CO2184_standard_dev_all_spring <- CO2184_standard_dev %>%
+  filter(waterDay >= 183 & waterDay <= 243) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+CO2184_standard_dev_all_spring <- CO2184_standard_dev_all_spring %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO2184_standard_dev_all_spring %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO2184_standard_dev_all_spring, aes(x = waterYear, y = sd_2))+
+  geom_line(size= 0.7) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO2184 Jun-Aug standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Spring standard deviations.
+```{r CO2184 sd mk & ss spring}
+
+CO2184_sd_mk_spring <- mk.test(CO2184_standard_dev_all_spring$sd_2)
+print(CO2184_sd_mk_spring)
+
+CO2184_sd_sens_spring <- sens.slope(CO2184_standard_dev_all_spring$sd_2)
+print(CO2184_sd_sens_spring)
+
+```
+
+Fall temperature standard deviation
+
+```{r CO2184 fall}
+
+CO2184_standard_dev_all_fall <- CO2184_standard_dev %>%
+  filter(waterDay >= 336 | waterDay <= 31) %>% # this might be better off as daymonth rather than day of water year due to leap year
+  group_by(waterYear) %>% 
+  mutate(nmbr = n())
+
+# Nope. This did some weird stuff with twice the observations.
+# CO2184_standard_dev_all_fall <- CO2184_standard_dev %>%
+#   filter(daymonth >= "01-11" & daymonth <= "31-03") %>%
+#   group_by(waterYear) %>% 
+#   mutate(nmbr = n())
+
+
+CO2184_standard_dev_all_fall <- CO2184_standard_dev_all_fall %>% 
+  group_by(waterYear) %>% 
+  mutate(resid_mean = mean(residual)) %>%
+  mutate(sd_1 = residual-resid_mean) %>% 
+  mutate(sd_2 = (((sum((sd_1)^2))/((nmbr-1))))^(0.5)) %>%
+  distinct(sd_2, .keep_all = TRUE) %>% 
+   select(waterYear, sd_2)
+
+CO2184_standard_dev_all_fall %>% 
+  kable(.,'html') %>%
+  kable_styling() %>%
+  scroll_box(width='250px',height='500px')
+
+ggplot(CO2184_standard_dev_all_fall, aes(x = waterYear, y = sd_2))+#, color = waterYear)) +
+  geom_line(size= 0.7) +
+  #geom_line(aes) +
+  theme_few() +
+  geom_smooth(method = "lm", se=FALSE) +
+  ylab('SD') + 
+  xlab('Water year')
+
+```
+
+**CO2184 Nov-Mar standard deviation for water years 1984-2022**
+
+Mann-Kendall & Sen’s Slope
+
+Fall standard deviations.
+```{r CO2184 sd mk & ss fall}
+
+CO2184_sd_mk_fall <- mk.test(CO2184_standard_dev_all_fall$sd_2)
+print(CO2184_sd_mk_fall)
+
+CO2184_sd_sens_fall <- sens.slope(CO2184_standard_dev_all_fall$sd_2)
+print(CO2184_sd_sens_fall)
+
+```
+
