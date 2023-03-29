@@ -14,6 +14,10 @@ editor_options:
 
 *This work is very preliminary as I get back into the coding swing of things. Data wrangling and figure generation will be done via R, but the rest of the project will be done using good ol' microsoft products. This is just an entry point into data crunching and should by no means be considered a final product.*
 
+3/29 update:
+
+slight error in methodology- should be corrected now. Git not showing up (but maybe it will after this next push!) 
+
 # All COOP
 
 ```{r libraries, include=FALSE}
