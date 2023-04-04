@@ -16,7 +16,7 @@ editor_options:
 
 3/29 update:
 
-slight error in methodology- should be corrected now. Git not showing up (but maybe it will after this next push!) 
+slight error in methodology- should be corrected now. Git not showing up (but maybe it will after this next push!). 
 
 # All COOP
 
